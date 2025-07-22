@@ -25,4 +25,11 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
     apt-get install -y --no-install-recommends docker-ce-cli && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# 4. Добавляем CA в Java truststore
+RUN keytool -importcert -trustcacerts -alias zscaler \
+    -file /usr/local/share/ca-certificates/zscaler_root.crt \
+    -keystore /opt/java/openjdk/lib/security/cacerts \
+    -storepass changeit \
+    -noprompt
+
 USER jenkins
