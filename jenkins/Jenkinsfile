@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  triggers {
+    githubPush()
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+    stage('Print info') {
+      steps {
+        echo 'Jenkins pipeline is running!'
+        sh 'ls -la'
+      }
+    }
+  }
+}
