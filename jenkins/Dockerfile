@@ -1,6 +1,12 @@
 FROM jenkins/jenkins:lts
 USER root
 
+# 0. Установим curl и nodejs LTS + npm
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs
+
 # 1. Корневой сертификат прокси (остается без изменений)
 COPY zscaler_root.crt /usr/local/share/ca-certificates/
 RUN chmod 644 /usr/local/share/ca-certificates/zscaler_root.crt \
