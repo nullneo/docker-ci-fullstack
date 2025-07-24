@@ -32,13 +32,17 @@ RUN keytool -importcert -trustcacerts -alias zscaler \
     -storepass changeit \
     -noprompt
 
-# 0. Установим curl и nodejs LTS + npm
+# 5. Установим curl и nodejs LTS + npm
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
+
+# 6. Скачать последнюю версию docker-compose-plugin
+RUN apt-get update && \
+    apt-get install -y docker-compose-plugin
 
 
 USER jenkins
