@@ -1,15 +1,6 @@
 FROM jenkins/jenkins:lts
 USER root
 
-# 2. Пакеты, каталог keyrings и ASCII-ключ Docker
-RUN set -e; \
-    apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl lsb-release && \
-    install -m 0755 -d /etc/apt/keyrings && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg \
-         -o /etc/apt/keyrings/docker.asc && \
-    chmod a+r /etc/apt/keyrings/docker.asc
-
 # 3. Репозиторий + установка CLI
 RUN echo "deb [arch=$(dpkg --print-architecture) \
            signed-by=/etc/apt/keyrings/docker.asc] \
