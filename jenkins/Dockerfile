@@ -1,11 +1,6 @@
 FROM jenkins/jenkins:lts
 USER root
 
-# 1. Корневой сертификат прокси (остается без изменений)
-COPY zscaler_root.crt /usr/local/share/ca-certificates/
-RUN chmod 644 /usr/local/share/ca-certificates/zscaler_root.crt \
-    && update-ca-certificates
-
 # 2. Пакеты, каталог keyrings и ASCII-ключ Docker
 RUN set -e; \
     apt-get update && \
