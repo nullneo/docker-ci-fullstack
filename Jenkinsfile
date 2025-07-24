@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKERHUB_USER = credentials('docker-ci-fullstack-user')
-        DOCKERHUB_PASS = credentials('docker-ci-fullstack-pass')
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -33,17 +28,19 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t aleksche/my-backend:latest ./backend'
-                sh 'docker build -t aleksche/my-frontend:latest ./frontend'
+                sh 'docker build -t my-backend ./backend'
+                sh 'docker build -t my-frontend ./frontend'
             }
         }
 
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-ci-fullstack', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh "echo \$PASS | docker login -u \$USER --password-stdin"
-                    sh 'docker push aleksche/my-backend:latest'
-                    sh 'docker push aleksche/my-frontend:latest'
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                    sh 'docker tag my-backend $USER/my-backend:latest'
+                    sh 'docker tag my-frontend $USER/my-frontend:latest'
+                    sh 'docker push $USER/my-backend:latest'
+                    sh 'docker push $USER/my-frontend:latest'
                 }
             }
         }
