@@ -40,9 +40,4 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-# 6. Скачать последнюю версию docker-compose-plugin
-RUN apt-get update && \
-    apt-get install -y docker-compose-plugin
-
-
 USER jenkins
