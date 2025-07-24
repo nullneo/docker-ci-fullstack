@@ -1,13 +1,13 @@
 services:
   frontend:
-    build: ./frontend
+    image: aleksche/my-frontend:latest
     ports:
       - "3000:80"
     depends_on:
       - backend
 
   backend:
-    build: ./backend
+    image: aleksche/my-backend:latest
     ports:
       - "4000:4000"
     environment:
