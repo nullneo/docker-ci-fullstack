@@ -63,6 +63,7 @@ pipeline {
             steps {
                 sh '''
                     docker compose pull
+		    docker rm -f jenkins-ci-fullstack-1 || true
                     docker compose up -d
                 '''
             }
