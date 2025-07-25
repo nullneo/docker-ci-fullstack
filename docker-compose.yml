@@ -40,7 +40,7 @@ services:
 
   jenkins:
     build: ./jenkins
-    container_name: jenkins
+    container_name: jenkins-ci-fullstack-1
     user: root
     ports:
       - "8080:8080"
