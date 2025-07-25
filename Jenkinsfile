@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_CRED_ID = 'docker-ci-fullstack'
+        ZSCALER_CERT_ID = 'zscaler-cert'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -28,19 +34,29 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t my-backend ./backend'
-                sh 'docker build -t my-frontend ./frontend'
+                withCredentials([file(credentialsId: env.ZSCALER_CERT_ID, variable: 'ZSCALER_CERT_PATH')]) {
+                    // Копируем сертификат во временную папку билд-контекста
+                    sh '''
+                        cp $ZSCALER_CERT_PATH ./jenkins/zscaler_root.crt
+                        docker build -t my-backend ./backend
+                        docker build -t my-frontend ./frontend
+                        # Сертификат больше не нужен - удаляем для чистоты
+                        rm -f ./jenkins/zscaler_root.crt
+                    '''
+                }
             }
         }
 
         stage('Docker Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-ci-fullstack', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh "echo $PASS | docker login -u $USER --password-stdin"
-                    sh 'docker tag my-backend $USER/my-backend:latest'
-                    sh 'docker tag my-frontend $USER/my-frontend:latest'
-                    sh 'docker push $USER/my-backend:latest'
-                    sh 'docker push $USER/my-frontend:latest'
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CRED_ID, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh '''
+                        echo $PASS | docker login -u $USER --password-stdin
+                        docker tag my-backend $USER/my-backend:latest
+                        docker tag my-frontend $USER/my-frontend:latest
+                        docker push $USER/my-backend:latest
+                        docker push $USER/my-frontend:latest
+                    '''
                 }
             }
         }
@@ -48,10 +64,17 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                docker compose pull
-                docker compose up -d
+                    docker compose pull
+                    docker compose up -d
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            // Чистим сертификат на случай, если упало между этапами
+            sh 'rm -f ./jenkins/zscaler_root.crt || true'
         }
     }
 }
