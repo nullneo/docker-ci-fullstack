@@ -40,8 +40,6 @@ pipeline {
                         cp $ZSCALER_CERT_PATH ./jenkins/zscaler_root.crt
                         docker build -t my-backend ./backend
                         docker build -t my-frontend ./frontend
-                        # Сертификат больше не нужен - удаляем для чистоты
-                        rm -f ./jenkins/zscaler_root.crt
                     '''
                 }
             }
