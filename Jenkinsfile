@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_CRED_ID = 'docker-ci-fullstack'
-        ZSCALER_CERT_ID = 'zscaler-cert'
+        ZSCALER_CERT_ID = 'zscaler_root.crt'
     }
 
     stages {
