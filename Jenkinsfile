@@ -62,9 +62,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    docker compose pull
-		    docker rm -f jenkins-ci-fullstack-1 || true
-                    docker compose up -d
+            	    docker compose pull --ignore-pull-failures
+            	    docker compose up -d --remove-orphans --no-deps backend frontend db adminer
                 '''
             }
         }
