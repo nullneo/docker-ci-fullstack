@@ -62,8 +62,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+            	    # Подтягиваем свежие образы (игнорируем неуспешные pulls)
             	    docker compose pull --ignore-pull-failures
-            	    docker compose up -d --remove-orphans --no-deps backend frontend db adminer
+
+            	    # Останавливаем и удаляем все контейнеры (и сети) текущего стека
+            	    docker compose down --remove-orphans
+
+            	    # Запускаем только нужные сервисы в фоне
+            	    docker compose up -d backend frontend db adminer
                 '''
             }
         }
