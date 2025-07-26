@@ -8,8 +8,8 @@ services:
 
   backend:
     image: aleksche/my-backend:latest
-    ports:
-      - "4000:4000"
+    # ports:
+    #  - "4000:4000"
     environment:
       - NODE_ENV=production
       - DB_HOST=db
@@ -27,14 +27,14 @@ services:
       POSTGRES_DB: mydatabase
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # ports:
+    #  - "5432:5432"
 
   adminer:
     image: adminer
     restart: always
-    ports:
-      - "8081:8080"
+    # ports:
+    #  - "8081:8080"
     depends_on:
       - db
 
